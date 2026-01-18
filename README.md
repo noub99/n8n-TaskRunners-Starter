@@ -98,13 +98,20 @@ docker compose up -d
 
 由於 Zeabur 設有資源限制，可能會遇到記憶體不足或 IP 滿載的問題。若要部署，建議使用以下方式：
 
-1. 安裝並登入 Zeabur CLI (`npx zeabur auth login`)。
-2. 在專案目錄下執行：
-   ```bash
-   npx zeabur template deploy -f zeabur.yaml
-   ```
-3. 這會自動讀取您 Repo 中的設定並部署三個服務。
+#### 1. 建立您的專屬模板 (推薦)
+在終端機執行以下指令（需安裝 `zeabur` CLI）：
+```bash
+npx zeabur template create -f zeabur.yaml
+```
+執行成功後，您會獲得一個 **模板連結** (例如 `https://zeabur.com/templates/XXXXXX`)。
 
+#### 2. 分享或部署
+- **直接部署**：點擊該連結即可開始部署。
+- **分享給學員**：將該連結分享給學員，他們也能一鍵部署由您設定好的環境。
+
+> **注意**：
+> 1. Zeabur 不支援 Docker Compose，必須透過 `zeabur.yaml` 部署。
+> 2. 免費版資源有限，若遇到記憶體不足 (OOM)，建議改用 Codespaces。
 ---
 
 ## 🔧 架構說明與 Python 使用範例
