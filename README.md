@@ -1,7 +1,5 @@
 # n8n Task Runners Starter
 
-[English](README_EN.md) | [繁體中文](README.md)
-
 n8n V2 的 Code 節點從原本在網頁執行改由外接的 Task Runner 執行，因此需要額外的 Task Runner 服務。
 
 但基礎 Task Runner 沒辦法安裝自定義套件，也無法使用 pip 安裝，造成每次都需要重新建置映像檔，為了減低這個麻煩，本專案提供一個預先配置好的 n8n 環境，包含 PostgreSQL 資料庫與專用的 Python Task Runner，你可以在這裡修改 task-runner/requirements.txt 來安裝自定義套件。
@@ -36,6 +34,25 @@ n8n V2 的 Code 節點從原本在網頁執行改由外接的 Task Runner 執行
    requests  <-- 新增範例
    ```
 4. 儲存變更 (Commit Changes)。
+
+---
+
+## 🔄 步驟二補充：如何在現有環境更新套件？
+
+如果您已經啟動了環境（步驟三），之後又修改了 `requirements.txt` 新增套件，請依下列方式套用變更：
+
+### Codespaces / 本機 (Docker)
+在終端機 (Terminal) 執行以下指令來重建 Task Runner：
+```bash
+docker compose build --no-cache task-runners
+docker compose up -d task-runners
+```
+*(重建完成後，新的套件即可在 Code 節點中使用)*
+
+### Zeabur
+1. 確保 `requirements.txt` 的變更已 Push 到 GitHub。
+2. 在 dashboard 進入 `n8n-python-runner` 服務。
+3. 點擊 **Redeploy** 按鈕，Zeabur 會重新讀取設定並安裝新套件。
 
 ---
 
