@@ -49,34 +49,55 @@ docker compose up -d
 
 ## 📦 如何新增 Python 套件
 
-本專案已支援 `requirements.txt` 安裝方式，方便學員自定義。
+**重要：如果您是學員，請先 Fork 此專案到您的 GitHub 帳號，再進行修改。**
 
-1. 打開 `task-runner/requirements.txt` 檔案。
-2. 加入您需要的 Python 套件名稱（一行一個）：
+1. **Fork 專案**：點擊右上角的 "Fork" 按鈕，將專案複製到您的帳號。
+2. **修改需求檔**：打開 `task-runner/requirements.txt` 檔案。
+3. **加入套件**：加入您需要的 Python 套件名稱（一行一個）：
    ```text
    pandas
    numpy
    scikit-learn  <-- 新增這行
    requests
    ```
-3. 重建 Task Runner 服務以套用變更：
-   
-   **在 Codespaces / 本機：**
-   ```bash
-   docker compose build --no-cache task-runners
-   docker compose up -d task-runners
-   ```
+4. **套用變更**：
 
-   **在 Zeabur：**
-   - 進入 `n8n-python-runner` 服務，點擊 **Redeploy**，Zeabur 會自動讀取新的 `requirements.txt` 並重建。
+   - **Codespaces / 本機**：
+     重啟 Codespace 或執行重建指令：
+     ```bash
+     docker compose build --no-cache task-runners
+     docker compose up -d task-runners
+     ```
+
+   - **Zeabur**：
+     在 Zeabur Dashboard 中進入 `n8n-python-runner` 服務，點擊 **Redeploy**。
 
 ---
 
 ## ☁️ 部署至 Zeabur (PaaS)
 
-<a href="https://zeabur.com/templates/56Y03Z?referralCode=richblack"><img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur"/></a>
+由於 Zeabur Template 需要註冊才能生成按鈕，建議使用以下兩種方式部署：
 
-Zeabur 提供了方便的雲端部署，但需注意資源消耗。n8n + PostgreSQL + Python Runner 至少需要一定的記憶體資源。
+### 方法一：使用 Zeabur CLI (推薦)
+這是最快速能完整部署三個服務（包含正確設定）的方式。
+
+1. 確保您已將此專案 Clone 到本機。
+2. 安裝並登入 Zeabur CLI：
+   ```bash
+   npm i -g zeabur
+   npx zeabur auth login
+   ```
+3. 執行部署指令：
+   ```bash
+   npx zeabur template deploy -f zeabur.yaml
+   ```
+
+### 方法二：手動部署 (Git)
+如果您希望從網頁操作：
+
+1. 在 Zeabur 建立新專案。
+2. 選擇 **Deploy New Service** -> **Git** -> 選擇您 Fork 的儲存庫。
+3. Zeabur 會自動偵測並部署服務。
 
 **注意事項**：
 - **資源限制**：免費版 Zeabur 可能因記憶體不足導致服務無法啟動 (OOM Killed) 或啟動極慢。建議付費方案或確保足夠 credit。
