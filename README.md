@@ -1,143 +1,192 @@
 # n8n Task Runners Starter
 
-n8n V2 的 Code 節點從原本在網頁執行改由外接的 Task Runner 執行，因此需要額外的 Task Runner 服務。
+> n8n + 外部 Python Task Runner + PostgreSQL — 支援 GitHub Codespaces、Docker 與 Zeabur 一鍵部署。
 
-但基礎 Task Runner 沒辦法安裝自定義套件，也無法使用 pip 安裝，造成每次都需要重新建置映像檔，為了減低這個麻煩，本專案提供一個預先配置好的 n8n 環境，包含 PostgreSQL 資料庫與專用的 Python Task Runner，你可以在這裡修改 task-runner/requirements.txt 來安裝自定義套件。
+> n8n with external Python Task Runner + PostgreSQL — ready to deploy on GitHub Codespaces, Docker, or Zeabur.
 
-範本特別針對 **進階資料處理** 預先設置了常用套件（如 pandas, numpy, scikit-learn）。
-
----
-
-## 🚀 步驟一：Fork 專案 (必要)
-
-為了讓您可以自定義 Python 套件，請先複製一份專案到您的帳號：
-
-1. 登入 GitHub。
-2. 點擊本頁面右上角的 **Fork** 按鈕。
-3. 建立 Fork 到您的個人帳號。
-
-> **接下來的步驟，請在您 Fork 出來的專案頁面中操作。**
-
-> **💡 教學提示**：
-> 本專案故意不提供 README 的「一鍵部署按鈕」或「Codespaces 按鈕」，是因為這些按鈕通常會連結到原始儲存庫。
-> 為了讓學員能真正修改並執行自己 Fork 版本中的 `requirements.txt`，請務必按照以下流程操作，確保使用的是您自己的程式碼。
+![n8n](https://img.shields.io/badge/n8n-2.2.3-EA4B71?style=flat-square&logo=n8n)
+![Python](https://img.shields.io/badge/Python-Task_Runner-3776AB?style=flat-square&logo=python)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql)
 
 ---
 
-## 📦 步驟二：自定義 Python 套件 (可選)
+## 為什麼需要這個專案 | Why This Exists
 
-如果您需要額外的 Python 函式庫，請修改需求檔：
+從 n8n v2 開始，Code 節點不再於瀏覽器中執行 JavaScript/Python，而是需要外部的 **Task Runner** 服務。預設的 Task Runner 不支援自定義套件，每次新增依賴都需要重建 Docker 映像檔。
 
-1. 在您的 Repo 中，打開 `task-runner/requirements.txt` 檔案。
-2. 點擊右上角筆型圖示 (Edit) 進行編輯。
-3. 加入您需要的套件名稱（一行一個），例如：
-   ```text
-   pandas
-   numpy
-   scikit-learn
-   requests  <-- 新增範例
-   ```
-4. 儲存變更 (Commit Changes)。
+本專案解決了這個問題 — 只需編輯 `task-runner/requirements.txt` 並重新部署即可。
 
 ---
 
-## 🔄 步驟二補充：如何在現有環境更新套件？
+Starting from n8n v2, Code nodes no longer run in-browser — they require an external **Task Runner** service. The default runner doesn't support custom packages, meaning you'd need to rebuild a Docker image every time you add a dependency.
 
-如果您已經啟動了環境（步驟三），之後又修改了 `requirements.txt` 新增套件，請依下列方式套用變更：
-
-### Codespaces / 本機 (Docker)
-在終端機 (Terminal) 執行以下指令來重建 Task Runner：
-```bash
-docker compose build --no-cache task-runners
-docker compose up -d task-runners
-```
-*(重建完成後，新的套件即可在 Code 節點中使用)*
-
-### Zeabur
-1. 確保 `requirements.txt` 的變更已 Push 到 GitHub。
-2. 在 dashboard 進入 `n8n-python-runner` 服務。
-3. 點擊 **Redeploy** 按鈕，Zeabur 會重新讀取設定並安裝新套件。
+This starter solves that by letting you simply edit `task-runner/requirements.txt` and redeploy.
 
 ---
 
-## ⚡ 步驟三：啟動環境
+## 包含內容 | What's Included
 
-請選擇以下其中一種方式啟動：
+| 服務 / Service | 說明 / Description |
+|----------------|-------------------|
+| **n8n** | 工作流程自動化 / Workflow automation (v2.2.3) |
+| **PostgreSQL 15** | n8n 的持久化資料庫 / Persistent database for n8n |
+| **Python Task Runner** | 預裝套件的外部執行器 / External runner with pre-installed packages |
 
-### 選項 A：GitHub Codespaces (教學推薦 🔥)
-完全免費，直接在瀏覽器中執行，無需安裝軟體。
+### 預裝 Python 套件 | Pre-installed Python Packages
 
-1. 在您的 GitHub Repo 頁面，點擊綠色的 **Code** 按鈕。
-2. 切換到 **Codespaces** 分頁。
-3. 點擊 **Create codespace on main**。
-4. 等待環境建置完成（約 2-3 分鐘），系統會自動啟動所有服務 (包含自動安裝您設定的套件)。
-5. 當右下角出現 "Open in Browser" 提示時，點擊即可開啟 n8n。
-   - 若未出現提示，請至下方 **"PORTS"** 分頁，點擊 **Port 5678** 旁的地球圖示。
-   - **注意**：首次進入需設定 n8n 帳號。
+| 類別 / Category | 套件 / Packages |
+|-----------------|----------------|
+| 資料處理 / Data | `pandas`, `numpy`, `scipy`, `scikit-learn`, `xgboost` |
+| 視覺化 / Visualization | `matplotlib`, `seaborn` |
+| AI / LLM | `openai`, `langchain`, `crewai`, `instructor` |
+| 文件處理 / Documents | `openpyxl`, `python-pptx`, `markitdown`, `mammoth`, `pdfminer` |
+| 網路 / Web | `requests`, `aiohttp`, `beautifulsoup4` |
+| Jupyter | 完整 Jupyter + JupyterLab 環境 / Full Jupyter + JupyterLab stack |
 
-> **關於資料保存**：
-> - 只要 **不刪除** Codespace，即使關閉視窗或暫停，資料庫與設定都會保留。下次啟動即可繼續使用。
-> - 若 GitHub 自動刪除閒置過久的 Codespace（預設 30 天未登入），資料將會遺失。建議重要流程定期匯出 JSON 備份。
+> 完整清單 / Full list: [`task-runner/requirements.txt`](./task-runner/requirements.txt)
 
-### 選項 B：一般伺服器 / 本機 (Docker)
-適用於您的電腦或 VPS (Linode, DigitalOcean)。
+---
 
-**系統需求**：安裝好 Docker 與 Docker Compose。
+## 快速開始 | Quick Start
+
+### 選項 A — GitHub Codespaces（推薦）| Option A — GitHub Codespaces (Recommended)
+
+無需安裝任何軟體，直接在瀏覽器中執行。  
+No installation required. Runs entirely in your browser.
+
+1. **Fork** 本專案到你的 GitHub 帳號 / **Fork** this repo to your GitHub account
+2. 點擊 **Code → Codespaces → Create codespace on main** / Click **Code → Codespaces → Create codespace on main**
+3. 等待約 2–3 分鐘建置環境 / Wait ~2–3 minutes for the environment to build
+4. 出現提示時點擊 **Open in Browser**，或至 **Ports** 分頁開啟 port `5678` / When prompted, click **Open in Browser** — or go to the **Ports** tab and open port `5678`
+5. 首次進入需建立 n8n 帳號 / Create your n8n account on first launch
+
+> **資料保存 / Data persistence：** 只要不刪除 Codespace，資料即會保留。GitHub 預設會自動刪除閒置超過 30 天的 Codespace，建議定期將重要流程匯出為 JSON 備份。  
+> Your data is preserved as long as you don't delete the Codespace. GitHub may auto-delete Codespaces inactive for 30+ days — export important workflows as JSON backups.
+
+---
+
+### 選項 B — Docker（本機 / VPS）| Option B — Docker (Local / VPS)
+
+**需求 / Requirements：** 已安裝 Docker 與 Docker Compose。
 
 ```bash
-# 1. 下載您的專案 (記得換成您的帳號)
+# 1. 下載你的 Fork（替換 YOUR_USERNAME）/ Clone your fork (replace YOUR_USERNAME)
 git clone https://github.com/YOUR_USERNAME/n8n-TaskRunners-Starter.git
 cd n8n-TaskRunners-Starter
 
-# 2. 設定環境變數
+# 2. 設定環境變數 / Set up environment variables
 cp .env.example .env
+# 編輯 .env 填入密碼與金鑰 / Edit .env and fill in your passwords and keys
 
-# 3. 啟動服務
+# 3. 啟動所有服務 / Start all services
 docker compose up -d
 
-# 4. 開啟瀏覽器: http://localhost:5678
+# 4. 開啟瀏覽器 / Open browser: http://localhost:5678
 ```
 
-### 選項 C：部署至 Zeabur (PaaS)
-
-由於 Zeabur 設有資源限制，可能會遇到記憶體不足或 IP 滿載的問題。若要部署，建議使用以下方式：
-
-#### 1. 建立您的專屬模板 (推薦)
-在終端機執行以下指令（需安裝 `zeabur` CLI）：
+產生安全的隨機金鑰 / Generate secure values for your `.env`:
 ```bash
-npx zeabur template create -f zeabur.yaml
+openssl rand -hex 32   # 用於 N8N_ENCRYPTION_KEY 與 TASK_RUNNER_AUTH_TOKEN
+                       # use for N8N_ENCRYPTION_KEY and TASK_RUNNER_AUTH_TOKEN
 ```
-執行成功後，您會獲得一個 **模板連結** (例如 `https://zeabur.com/templates/XXXXXX`)。
 
-#### 2. 分享或部署
-- **直接部署**：點擊該連結即可開始部署。
-- **分享給學員**：將該連結分享給學員，他們也能一鍵部署由您設定好的環境。
-
-> **注意**：
-> 1. Zeabur 不支援 Docker Compose，必須透過 `zeabur.yaml` 部署。
-> 2. 免費版資源有限，若遇到記憶體不足 (OOM)，建議改用 Codespaces。
 ---
 
-## 🔧 架構說明與 Python 使用範例
+### 選項 C — Zeabur（PaaS）| Option C — Zeabur (PaaS)
 
-本專案包含三個核心服務：**n8n** (主程式), **db** (PostgreSQL), **task-runners** (Python 環境)。
+> 注意：Zeabur 免費版有資源限制，若遇到記憶體不足（OOM），建議改用 Codespaces。  
+> Note: Zeabur free tier has resource limits. If you hit OOM errors, use Codespaces instead.
 
-要在 n8n 中使用 Python：
-1. 建立 "Code" 節點，語言選擇 Python。
-2. 範例程式碼：
+1. Fork 本專案 / Fork this repo
+2. 在終端機執行 / Run in your terminal:
+   ```bash
+   npx zeabur template create -f zeabur.yaml
+   ```
+3. 點擊產生的模板連結即可部署 / Click the generated template link to deploy
+
+---
+
+## 新增自定義 Python 套件 | Adding Custom Python Packages
+
+1. 開啟你 Fork 中的 `task-runner/requirements.txt` / Open `task-runner/requirements.txt` in your forked repo
+2. 新增套件（每行一個）/ Add your packages (one per line):
+   ```
+   pandas
+   numpy
+   requests
+   my-new-package   # ← 在此新增 / add here
+   ```
+3. 儲存並 Commit / Save and commit
+
+套用變更 / Apply the changes:
+
+| 部署方式 / Deployment | 指令 / Command |
+|----------------------|---------------|
+| **Docker / Codespaces** | `docker compose build --no-cache task-runners && docker compose up -d task-runners` |
+| **Zeabur** | Push 變更 → 進入 `n8n-python-runner` 服務 → 點擊 **Redeploy** / Push changes → go to `n8n-python-runner` service → click **Redeploy** |
+
+---
+
+## 在 n8n Code 節點使用 Python | Using Python in n8n Code Nodes
+
+1. 新增 **Code** 節點到你的工作流程 / Add a **Code** node to your workflow
+2. 將語言設定為 **Python** / Set the language to **Python**
+3. 範例 / Example:
 
 ```python
 import json
 import pandas as pd
 
-# 讀取輸入
 input_data = _query
 if isinstance(input_data, str):
     input_data = json.loads(input_data)
 
-# 使用 pandas 處理
 df = pd.DataFrame(input_data)
-result_count = int(len(df))
 
-return {'count': result_count, 'columns': list(df.columns)}
+return {
+    "row_count": len(df),
+    "columns": list(df.columns),
+    "summary": df.describe().to_dict()
+}
 ```
+
+---
+
+## 環境變數 | Environment Variables
+
+| 變數 / Variable | 說明 / Description | 預設值 / Default |
+|-----------------|-------------------|-----------------|
+| `POSTGRES_USER` | PostgreSQL 使用者名稱 / username | `postgres` |
+| `POSTGRES_PASSWORD` | PostgreSQL 密碼 / password | *(必填 / required)* |
+| `POSTGRES_DB` | 資料庫名稱 / Database name | `n8n` |
+| `N8N_ENCRYPTION_KEY` | 憑證加密金鑰 / Encryption key for credentials | *(必填 / required)* |
+| `N8N_HOST` | n8n 主機名稱 / Hostname | `localhost` |
+| `WEBHOOK_URL` | Webhook 公開網址 / Public URL for webhooks | `http://localhost:5678` |
+| `TIMEZONE` | 時區 / Timezone | `Asia/Taipei` |
+| `TASK_RUNNER_AUTH_TOKEN` | Task Runner 驗證金鑰 / Auth token | *(必填 / required)* |
+
+---
+
+## 架構說明 | Architecture
+
+```
+┌─────────────────────────────────┐
+│        Docker Network           │
+│                                 │
+│  ┌─────────┐    ┌───────────┐  │
+│  │  n8n    │◄──►│ PostgreSQL│  │
+│  │ :5678   │    │    :5432  │  │
+│  └────┬────┘    └───────────┘  │
+│       │                        │
+│  ┌────▼──────────────────────┐ │
+│  │  Python Task Runner       │ │
+│  │  (pandas, langchain, ...) │ │
+│  └───────────────────────────┘ │
+└─────────────────────────────────┘
+```
+
+---
+
+## 授權 | License
+
+MIT
